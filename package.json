@@ -48,7 +48,8 @@
       {
         "provider": "github",
         "owner": "wangming123456456",
-        "repo": "deepseek-harness-desktop"
+        "repo": "deepseek-harness-desktop",
+        "releaseType": "release"
       }
     ],
     "win": {
