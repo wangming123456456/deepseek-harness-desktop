@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/you/dsh-desktop.git"
+    "url": "https://github.com/wangming123456456/12.git"
   },
   "scripts": {
     "start": "electron .",
@@ -47,8 +47,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "you",
-        "repo": "dsh-desktop"
+        "owner": "wangming123456456",
+        "repo": "12"
       }
     ],
     "win": {
