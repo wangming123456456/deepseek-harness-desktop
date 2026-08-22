@@ -63,6 +63,37 @@ unpacked test build.
 - The per-OS Node binary is staged into `vendor/node/` (`node.exe` on Windows, `node` elsewhere);
   stage only the platform you are building so each installer stays lean.
 
+## Releases & auto-update
+
+The Windows build ships with **automatic updates** via `electron-updater` + **GitHub Releases**.
+The app checks the repo's latest release every time it launches; if a newer version exists it
+downloads it and installs on restart.
+
+- **Update source** is embedded (`resources\app-update.yml`) from `package.json` → `build.publish`
+  (`provider: github`, `owner`, `repo`). Point an existing release at:
+  `https://github.com/<owner>/<repo>/releases/latest`.
+- **Only the installed (NSIS `Setup.exe`) build auto-updates.** The portable single-file and the
+  `win-unpacked` build do **not** — `electron-updater` needs a proper install location. So install
+  with `Setup.exe` to receive updates.
+
+### Publish a new release
+
+```powershell
+# 1. bump the version in package.json (e.g. 1.0.0 -> 1.0.1)
+# 2. set a GitHub token that can write to the repo
+$env:GH_TOKEN = "your fine-grained token (Contents: read & write)"
+# 3. build + upload to GitHub Releases
+npm run release:win
+```
+
+`release:win` = `electron-builder --win --publish always`. It builds the NSIS installer + the
+portable exe, then uploads them plus `latest.yml` (the update metadata) to the repo's GitHub
+Releases under a tag `v<version>`. After that, any installed older version auto-updates on next
+launch.
+
+> Auto-update needs the target machine to reach GitHub. On networks where github.com is
+> intermittent/blocked (common in CN), the app may need a proxy/VPN to fetch updates.
+
 ## Files
 
 | File | Purpose |
@@ -72,7 +103,8 @@ unpacked test build.
 | `vendor/dsh` | Bundled harness (multi-OS native prebuilds). |
 | `vendor/node/` | Bundled Node runtime for the build OS (`node.exe` on Windows, `node` elsewhere). |
 | `scripts/fetch-node.cjs` | Downloads/stages the current OS/arch Node binary into `vendor/node/`. |
-| `build/icon.png` | Custom 512×512 app icon used for win/mac/linux. |
+| `scripts/fetch-harness.cjs` | Copies the globally-installed `@deepseek-ai/dsh` harness into `vendor/dsh/`. |
+| `build/icon.png` | 512×512 app icon (DeepSeek whale) used for win/mac/linux. |
 | `package.json` | Scripts, electron-builder config (win/mac/linux targets), `extraResources`. |
 
 ## Customizing
@@ -83,6 +115,9 @@ unpacked test build.
 
 ## Notes
 
+- **Fresh clone**: run `npm install` then `npm run setup` to stage the harness + Node into
+  `vendor/` (they're gitignored) before building.
 - External links open in the system browser; navigation stays on the DSH origin.
 - Installers are large (the harness + Node are bundled) — the price of zero dependency on target.
 - Unsigned: other machines may show a SmartScreen/Gatekeeper warning on first run.
+- Credentials are **not** bundled; configure your model/provider once in the app UI on first launch.
