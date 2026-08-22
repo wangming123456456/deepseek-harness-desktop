@@ -1,6 +1,6 @@
 {
   "name": "dsh-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Native desktop shell for DeepSeek Harness: loads the DSH web interface in a window and can be packaged into a Windows installer.",
   "main": "main.js",
   "author": "",
