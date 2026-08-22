@@ -1,0 +1,86 @@
+{
+  "name": "dsh-desktop",
+  "version": "1.0.0",
+  "description": "Native desktop shell for DeepSeek Harness: loads the DSH web interface in a window and can be packaged into a Windows installer.",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/you/dsh-desktop.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "node scripts/fetch-node.cjs && electron-builder --mac",
+    "dist:linux": "node scripts/fetch-node.cjs && electron-builder --linux",
+    "prepare:node": "node scripts/fetch-node.cjs",
+    "setup": "node scripts/fetch-node.cjs && node scripts/fetch-harness.cjs",
+    "release:win": "electron-builder --win --publish always"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.dsh.desktop",
+    "productName": "DeepSeek Harness Desktop",
+    "files": [
+      "main.js",
+      "preload.js"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/dsh",
+        "to": "vendor/dsh"
+      },
+      {
+        "from": "vendor/node",
+        "to": "vendor/node"
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "you",
+        "repo": "dsh-desktop"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/icon.png",
+      "category": "Development"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  }
+}
